@@ -16,6 +16,8 @@
 
     <modules>
         <module>sample-eureka-server</module>
+        <module>sample-eureka-server-peer-1</module>
+        <module>sample-eureka-server-peer-2</module>
         <module>sample-eureka-client-1</module>
         <module>sample-eureka-client-2</module>
     </modules>
