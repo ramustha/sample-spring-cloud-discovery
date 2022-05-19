@@ -36,7 +36,7 @@ public class SampleEurekaClient1Application {
 	@GetMapping("/")
 	public Mono<String> home() {
 		String instanceId = eurekaClient.getApplicationInfoManager().getInfo().getInstanceId();
-		int randomSeconds = ThreadLocalRandom.current().nextInt(1, 5);
+		int randomSeconds = ThreadLocalRandom.current().nextInt(3);
 		return circuitBreakerFactory.create("home")
 				.run(Mono.delay(Duration.ofSeconds(randomSeconds)) // simulate delay
 								.then(Mono.just(String.format("Hello from instance %s", instanceId))),
