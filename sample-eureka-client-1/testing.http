@@ -17,3 +17,12 @@ http://localhost:9000/
 
 ###
 http://localhost:9000/
+
+###
+http://localhost:8080/home
+
+###
+http://localhost:8080/api/client1
+
+###
+http://localhost:8080/api/client2
