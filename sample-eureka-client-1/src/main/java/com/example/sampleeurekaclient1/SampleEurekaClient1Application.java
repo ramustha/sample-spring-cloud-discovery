@@ -14,13 +14,18 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.netflix.hystrix.ReactiveHystrixCircuitBreakerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Duration;
-import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
 @RestController
@@ -28,6 +33,7 @@ import java.util.concurrent.ThreadLocalRandom;
 @SpringBootApplication
 public class SampleEurekaClient1Application {
 	private static final Logger LOG = LoggerFactory.getLogger(SampleEurekaClient1Application.class);
+	private final Path uploadPath = Paths.get("sample-eureka-client-1/upload/");
 
 	public static void main(String[] args) {
 		SpringApplication.run(SampleEurekaClient1Application.class, args);
@@ -49,6 +55,16 @@ public class SampleEurekaClient1Application {
 								.then(Mono.just(String.format("Hello from instance %s", instanceId))),
 						throwable -> Mono.just("Fallback from circuit breaker with delay " + randomSeconds + " seconds"));
 	}
+
+	@PostMapping(value = "/upload")
+	public Mono<String> uploadSingle(@RequestPart("fileToUpload") Flux<FilePart> filePartMono) {
+		return filePartMono
+				.doOnNext(file -> LOG.info("uploading => {}", file.filename()))
+				.flatMap(file -> file.transferTo(uploadPath.resolve(file.filename())))
+				.singleOrEmpty()
+				.thenReturn("OK");
+	}
+
 }
 
 @Configuration
