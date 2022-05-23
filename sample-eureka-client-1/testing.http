@@ -20,9 +20,12 @@ http://localhost:9000/
 
 ###
 http://localhost:8080/home
+Authorization: s3cr3t
 
 ###
 http://localhost:8080/api/client1
+Authorization: s3cr3t
 
 ###
 http://localhost:8080/api/client2
+Authorization: s3cr3t
