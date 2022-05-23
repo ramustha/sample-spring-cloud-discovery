@@ -14,8 +14,8 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.netflix.hystrix.ReactiveHystrixCircuitBreakerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
@@ -39,8 +39,9 @@ public class SampleEurekaClient1Application {
 	private ReactiveHystrixCircuitBreakerFactory circuitBreakerFactory;
 
 	@GetMapping("/")
-	public Mono<String> home(@RequestHeader("Authorization") Optional<String> authorization) {
-		LOG.info("authorization => {}", authorization);
+	public Mono<String> home(ServerHttpRequest request) {
+		LOG.info("headers => {}", request.getHeaders());
+
 		String instanceId = eurekaClient.getApplicationInfoManager().getInfo().getInstanceId();
 		int randomSeconds = ThreadLocalRandom.current().nextInt(3);
 		return circuitBreakerFactory.create("home")

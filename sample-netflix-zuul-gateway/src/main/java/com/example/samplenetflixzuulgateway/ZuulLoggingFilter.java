@@ -33,7 +33,8 @@ public class ZuulLoggingFilter extends ZuulFilter {
   public Object run() throws ZuulException {
     RequestContext context = RequestContext.getCurrentContext();
 
-    context.addZuulResponseHeader("X-sample", "1234");
+    context.addZuulResponseHeader("X-response-sample", "x-response");
+    context.addZuulRequestHeader("X-request-sample", "x-request");
 
     HttpServletRequest request = context.getRequest();
     logger.info("Authorization -> {}", request.getHeader("Authorization"));
