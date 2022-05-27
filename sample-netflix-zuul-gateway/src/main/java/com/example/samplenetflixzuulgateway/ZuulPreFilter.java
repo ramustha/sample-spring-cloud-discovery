@@ -5,14 +5,16 @@ import com.netflix.zuul.context.RequestContext;
 import com.netflix.zuul.exception.ZuulException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.netflix.zuul.filters.ProxyRequestHelper;
 import org.springframework.cloud.netflix.zuul.filters.support.FilterConstants;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 
 @Component
-public class ZuulLoggingFilter extends ZuulFilter {
-  private Logger logger = LoggerFactory.getLogger(this.getClass());
+public class ZuulPreFilter extends ZuulFilter {
+  private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   @Override
   public String filterType() {
@@ -21,7 +23,7 @@ public class ZuulLoggingFilter extends ZuulFilter {
 
   @Override
   public int filterOrder() {
-    return 0;
+    return FilterConstants.PRE_DECORATION_FILTER_ORDER - 1; // run before PreDecoration
   }
 
   @Override
@@ -29,16 +31,18 @@ public class ZuulLoggingFilter extends ZuulFilter {
     return true;
   }
 
+  @Autowired
+  private ProxyRequestHelper helper;
+
   @Override
   public Object run() throws ZuulException {
     RequestContext context = RequestContext.getCurrentContext();
 
-    context.addZuulResponseHeader("X-response-sample", "x-response");
-    context.addZuulRequestHeader("X-request-sample", "x-request");
+    context.addZuulResponseHeader("X-response-sample", "pre-response");
+    context.addZuulRequestHeader("X-request-sample", "pre-request");
 
     HttpServletRequest request = context.getRequest();
-    logger.info("Authorization -> {}", request.getHeader("Authorization"));
-    logger.info("request -> {} request uri-> {}", request, request.getRequestURI());
+    logger.info("PRE_FILTER -> {}", helper.buildZuulRequestURI(request));
     return null;
   }
 }
