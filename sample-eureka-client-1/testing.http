@@ -18,19 +18,19 @@ http://localhost:9000/
 ###
 http://localhost:9000/
 
-###
+### /api/home
 http://localhost:8080/home
 Authorization: s3cr3t
 
-###
+### /api/client1
 http://localhost:8080/api/client1
 Authorization: s3cr3t
 
-###
+### /api/client2
 http://localhost:8080/api/client2
 Authorization: s3cr3t
 
-###
+### /api/client1/upload
 POST http://localhost:8080/zuul/api/client1/upload
 Content-Type: multipart/form-data; boundary=WebAppBoundary
 
